@@ -25,4 +25,7 @@
 #define DISPLAY_MIRROR_X true
 #define DISPLAY_MIRROR_Y true
 
+#define U1RXD GPIO_NUM_12
+#define U1TXD GPIO_NUM_13
+
 #endif // _BOARD_CONFIG_H_

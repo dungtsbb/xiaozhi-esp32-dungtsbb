@@ -724,6 +724,12 @@ target_compile_definitions(${COMPONENT_LIB}
                     PRIVATE BUILTIN_TEXT_FONT=${BUILTIN_TEXT_FONT} BUILTIN_ICON_FONT=${BUILTIN_ICON_FONT}
                     )
 
+# Bật test UART1 cho build hiện tại
+# arget_compile_definitions(${COMPONENT_LIB} PRIVATE ENABLE_UART1_TEST)                    
+
+# Bật test I2C cho build hiện tại
+target_compile_definitions(${COMPONENT_LIB} PRIVATE ENABLE_I2C_TEST)
+
 # Add generation rules
 add_custom_command(
     OUTPUT ${LANG_HEADER}

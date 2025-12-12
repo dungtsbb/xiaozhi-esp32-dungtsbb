@@ -16,9 +16,18 @@
 #include <esp_lcd_panel_ops.h>
 #include <esp_lcd_panel_vendor.h>
 
-#define TAG "XminiC3Board"
+#define TAG "XminiC3CustomBoard"
 
-class XminiC3Board : public WifiBoard {
+#ifdef ENABLE_UART1_TEST
+// Forward declaration (hàm nằm trong uart1_test.cc)
+void TestUart1Loopback();
+#endif
+
+#ifdef ENABLE_I2C_TEST
+void TestI2cProbe(i2c_master_bus_handle_t bus);
+#endif
+
+class XminiC3CustomBoard : public WifiBoard {
 private:
     i2c_master_bus_handle_t codec_i2c_bus_;
     esp_lcd_panel_io_handle_t panel_io_ = nullptr;
@@ -143,7 +152,7 @@ private:
     }
 
 public:
-    XminiC3Board() : boot_button_(BOOT_BUTTON_GPIO) {
+    XminiC3CustomBoard() : boot_button_(BOOT_BUTTON_GPIO) {
         InitializeCodecI2c();
         InitializeSsd1306Display();
         InitializeButtons();
@@ -153,6 +162,16 @@ public:
         // 避免使用错误的固件，把 EFUSE 操作放在最后
         // 把 ESP32C3 的 VDD SPI 引脚作为普通 GPIO 口使用
         esp_efuse_write_field_bit(ESP_EFUSE_VDD_SPI_AS_GPIO);
+
+        #ifdef ENABLE_UART1_TEST
+        ESP_LOGI("UART1_TEST", "start");
+        TestUart1Loopback();  // chạy loopback UART1 trên TX=GPIO13, RX=GPIO12
+        #endif
+
+        #ifdef ENABLE_I2C_TEST
+        TestI2cProbe(codec_i2c_bus_);
+        #endif
+
     }
 
     virtual Led* GetLed() override {
@@ -179,4 +198,4 @@ public:
     }
 };
 
-DECLARE_BOARD(XminiC3Board);
+DECLARE_BOARD(XminiC3CustomBoard);
